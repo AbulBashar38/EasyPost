@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "expo-router";
-import { useRef, useState } from "react";
+import { useRef } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -20,12 +20,17 @@ import Input from "@/components/ui/Input";
 import { signupSchema, type SignupFormData } from "./signupSchema";
 
 interface SignupFormProps {
-  onSubmit: (data: SignupFormData) => Promise<void>;
+  onSubmit: (data: SignupFormData) => void;
+  isPending?: boolean;
+  apiError?: string | null;
 }
 
-export default function SignupForm({ onSubmit }: SignupFormProps) {
+export default function SignupForm({
+  onSubmit,
+  isPending = false,
+  apiError,
+}: SignupFormProps) {
   const router = useRouter();
-  const [isLoading, setIsLoading] = useState(false);
 
   const lastNameRef = useRef<TextInputType>(null);
   const emailRef = useRef<TextInputType>(null);
@@ -46,15 +51,6 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
       confirmPassword: "",
     },
   });
-
-  async function onFormSubmit(data: SignupFormData) {
-    setIsLoading(true);
-    try {
-      await onSubmit(data);
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   return (
     <ThemedView className="flex-1 bg-surface">
@@ -193,31 +189,40 @@ export default function SignupForm({ onSubmit }: SignupFormProps) {
                     showToggle
                     returnKeyType="done"
                     inputRef={confirmPasswordRef}
-                    onSubmitEditing={handleSubmit(onFormSubmit)}
+                    onSubmitEditing={handleSubmit(onSubmit)}
                   />
                 )}
               />
             </View>
 
+            {/* API Error */}
+            {apiError && (
+              <View className="mb-4 rounded-xl bg-error-light px-4 py-3">
+                <ThemedText className="!text-error text-sm">
+                  {apiError}
+                </ThemedText>
+              </View>
+            )}
+
             {/* Sign Up Button */}
             <TouchableOpacity
-              onPress={handleSubmit(onFormSubmit)}
-              disabled={isLoading}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isPending}
               activeOpacity={0.85}
               className={`mb-6 items-center justify-center rounded-2xl h-14 shadow-lg ${
-                isLoading ? "bg-primary/60" : "bg-primary"
+                isPending ? "bg-primary/60" : "bg-primary"
               }`}
               style={{
-                shadowColor: isLoading
+                shadowColor: isPending
                   ? "transparent"
                   : "rgb(var(--color-primary))",
                 shadowOffset: { width: 0, height: 6 },
-                shadowOpacity: isLoading ? 0 : 0.3,
+                shadowOpacity: isPending ? 0 : 0.3,
                 shadowRadius: 12,
-                elevation: isLoading ? 0 : 8,
+                elevation: isPending ? 0 : 8,
               }}
             >
-              {isLoading ? (
+              {isPending ? (
                 <ActivityIndicator color="#fff" />
               ) : (
                 <ThemedText className="!text-white text-base font-bold tracking-wide">
