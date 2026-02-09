@@ -21,3 +21,12 @@ export interface Comment {
   createdAt: string;
   parentId: string | null;
 }
+
+export interface Notification {
+  id: string;
+  type: "like" | "comment" | "follow";
+  actor: User;
+  postId?: string;
+  read: boolean;
+  createdAt: string;
+}

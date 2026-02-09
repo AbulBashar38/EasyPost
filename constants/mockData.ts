@@ -1,4 +1,4 @@
-import type { Comment, Post } from "./types";
+import type { Comment, Notification, Post } from "./types";
 
 export const MOCK_POSTS: Post[] = [
   {
@@ -131,5 +131,54 @@ export const MOCK_COMMENTS: Comment[] = [
     text: "ESLint has a rule for that! no-floating-promises is a lifesaver.",
     createdAt: "2026-02-08T19:15:00Z",
     parentId: "c7",
+  },
+];
+
+export const MOCK_NOTIFICATIONS: Notification[] = [
+  {
+    id: "n1",
+    type: "like",
+    actor: { id: "u2", name: "Marcus Johnson", handle: "@marcusj" },
+    postId: "1",
+    read: false,
+    createdAt: "2026-02-09T11:10:00Z",
+  },
+  {
+    id: "n2",
+    type: "comment",
+    actor: { id: "u3", name: "Priya Patel", handle: "@priyabuilds" },
+    postId: "1",
+    read: false,
+    createdAt: "2026-02-09T11:30:00Z",
+  },
+  {
+    id: "n3",
+    type: "follow",
+    actor: { id: "u5", name: "Jordan Lee", handle: "@jordanlee" },
+    read: false,
+    createdAt: "2026-02-09T10:00:00Z",
+  },
+  {
+    id: "n4",
+    type: "like",
+    actor: { id: "u4", name: "Alex Rivera", handle: "@alexr" },
+    postId: "6",
+    read: true,
+    createdAt: "2026-02-08T15:00:00Z",
+  },
+  {
+    id: "n5",
+    type: "comment",
+    actor: { id: "u6", name: "Emma Wilson", handle: "@emmaw" },
+    postId: "1",
+    read: true,
+    createdAt: "2026-02-08T12:30:00Z",
+  },
+  {
+    id: "n6",
+    type: "follow",
+    actor: { id: "u2", name: "Marcus Johnson", handle: "@marcusj" },
+    read: true,
+    createdAt: "2026-02-07T18:00:00Z",
   },
 ];
