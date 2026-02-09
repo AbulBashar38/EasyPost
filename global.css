@@ -1,3 +1,38 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Auth form color variables for dynamic theming */
+@layer base {
+  :root {
+    /* Light mode colors */
+    --color-primary: 108 99 255; /* #6C63FF */
+    --color-primary-pressed: 90 82 224; /* #5A52E0 */
+    --color-primary-faded: 108 99 255; /* #6C63FF with opacity */
+    --color-input-bg: 248 247 255; /* #F8F7FF */
+    --color-input-border: 232 230 240; /* #E8E6F0 */
+    --color-placeholder: 168 163 192; /* #A8A3C0 */
+    --color-muted: 139 133 173; /* #8B85AD */
+    --color-error: 239 68 68; /* #EF4444 */
+    --color-error-light: 254 242 242; /* #FEF2F2 */
+    --color-surface: 255 255 255; /* #FFFFFF */
+    --color-icon-bg: 238 237 248; /* #EEEDF8 */
+    --color-text: 17 24 28; /* #11181C */
+  }
+
+  .dark {
+    /* Dark mode colors */
+    --color-primary: 167 139 250; /* #A78BFA */
+    --color-primary-pressed: 139 111 224; /* #8B6FE0 */
+    --color-primary-faded: 167 139 250; /* #A78BFA with opacity */
+    --color-input-bg: 30 27 46; /* #1E1B2E */
+    --color-input-border: 45 41 69; /* #2D2945 */
+    --color-placeholder: 107 101 137; /* #6B6589 */
+    --color-muted: 160 155 184; /* #A09BB8 */
+    --color-error: 248 113 113; /* #F87171 */
+    --color-error-light: 59 26 26; /* #3B1A1A */
+    --color-surface: 19 17 28; /* #13111C */
+    --color-icon-bg: 37 34 56; /* #252238 */
+    --color-text: 236 237 238; /* #ECEDEE */
+  }
+}
