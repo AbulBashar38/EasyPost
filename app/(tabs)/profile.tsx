@@ -11,7 +11,7 @@ import { getMyPosts } from "@/services/postService";
 import { IPost } from "@/types/PostType";
 
 export default function ProfileScreen() {
-  const { user } = useAuth();
+  const { user, signOut } = useAuth();
 
   const { data, isLoading } = useQuery({
     queryKey: ["myPosts"],
@@ -25,6 +25,10 @@ export default function ProfileScreen() {
     () => myPosts.reduce((sum, p) => sum + (p.likesCount ?? 0), 0),
     [myPosts],
   );
+
+  const handleLogout = () => {
+    signOut();
+  };
 
   if (!user) {
     return (
@@ -49,6 +53,7 @@ export default function ProfileScreen() {
               bio="Software engineer building things for the web. Open source enthusiast. Always learning, always shipping."
               postCount={data?.total ?? myPosts.length}
               totalLikes={totalLikes}
+              onLogout={handleLogout}
             />
             <View className="border-b border-divider px-4 py-2.5">
               <ThemedText className="text-sm font-semibold">Posts</ThemedText>

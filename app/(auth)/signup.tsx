@@ -27,7 +27,11 @@ export default function SignupScreen() {
       if (err instanceof AxiosError) {
         console.log(err);
 
-        // console.error("Signup error:", err.response?.status, err.response?.data);
+        console.error(
+          "Signup error:",
+          err.response?.status,
+          err.response?.data,
+        );
       } else {
         console.error("Signup error:", err);
       }

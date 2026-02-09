@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View } from "react-native";
+import { TouchableOpacity, View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
 import UserAvatar from "@/components/feed/UserAvatar";
@@ -12,6 +12,7 @@ interface ProfileHeaderProps {
   bio: string;
   postCount: number;
   totalLikes: number;
+  onLogout?: () => void;
 }
 
 export default function ProfileHeader({
@@ -21,6 +22,7 @@ export default function ProfileHeader({
   bio,
   postCount,
   totalLikes,
+  onLogout,
 }: ProfileHeaderProps) {
   return (
     <Animated.View
@@ -68,6 +70,20 @@ export default function ProfileHeader({
           <ThemedText className="!text-muted mt-0.5 text-xs">Likes</ThemedText>
         </View>
       </View>
+
+      {/* Logout */}
+      {onLogout && (
+        <TouchableOpacity
+          onPress={onLogout}
+          activeOpacity={0.7}
+          className="mt-5 w-full flex-row items-center justify-center gap-2 rounded-2xl border border-error/20 bg-error-light py-3"
+        >
+          <Ionicons name="log-out-outline" size={18} className="!text-error" />
+          <ThemedText className="!text-error text-sm font-semibold">
+            Logout
+          </ThemedText>
+        </TouchableOpacity>
+      )}
     </Animated.View>
   );
 }
