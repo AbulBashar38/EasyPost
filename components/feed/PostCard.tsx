@@ -1,11 +1,13 @@
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useCallback, useState } from "react";
 import { View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
-import CommentSection from "@/components/comments/CommentSection";
 import { ThemedText } from "@/components/themed-text";
-import type { Comment, Post } from "@/constants/types";
+import { getPostById, toggleLike } from "@/services/postService";
 
+import { IPost } from "@/types/PostType";
+import CommentSection from "../comments/CommentSection";
 import PostActions from "./PostActions";
 import UserAvatar from "./UserAvatar";
 
@@ -29,19 +31,46 @@ function getRelativeTime(isoString: string): string {
 }
 
 interface PostCardProps {
-  post: Post;
+  post: IPost;
   index: number;
-  comments?: Comment[];
-  onAddComment?: (postId: string, text: string, parentId?: string) => void;
 }
 
-export default function PostCard({
-  post,
-  index,
-  comments = [],
-  onAddComment,
-}: PostCardProps) {
+export default function PostCard({ post: initialPost, index }: PostCardProps) {
   const [showComments, setShowComments] = useState(false);
+  const [post, setPost] = useState<IPost>(initialPost);
+  const [isLiked, setIsLiked] = useState(post.isLiked ?? false);
+  const [likeCount, setLikeCount] = useState(post.likesCount ?? 0);
+
+  const refreshPost = useCallback(async () => {
+    try {
+      const updated = await getPostById(post._id);
+      setPost(updated);
+      setIsLiked(updated.isLiked ?? false);
+      setLikeCount(updated.likesCount ?? 0);
+    } catch {
+      // silently fail – optimistic state is still valid
+    }
+  }, [post._id]);
+
+  const { mutate: mutateLike, isPending: isLiking } = useMutation({
+    mutationFn: () => toggleLike(post._id),
+    onMutate: () => {
+      const previousIsLiked = isLiked;
+      const previousLikeCount = likeCount;
+
+      const newIsLiked = !previousIsLiked;
+      setIsLiked(newIsLiked);
+      setLikeCount(newIsLiked ? previousLikeCount + 1 : previousLikeCount - 1);
+
+      return { previousIsLiked, previousLikeCount };
+    },
+    onError: (_err, _variables, context) => {
+      if (context) {
+        setIsLiked(context.previousIsLiked);
+        setLikeCount(context.previousLikeCount);
+      }
+    },
+  });
 
   return (
     <Animated.View
@@ -49,14 +78,17 @@ export default function PostCard({
       className="border-b border-divider px-4 py-3"
     >
       <View className="flex-row items-start gap-3">
-        <UserAvatar name={post.user.name} userId={post.user.id} />
+        <UserAvatar
+          name={`${post?.userId?.firstName} ${post?.userId?.lastName}`}
+          userId={post?.userId?._id ?? String(index)}
+        />
         <View className="flex-1">
           <View className="flex-row items-center gap-1.5">
             <ThemedText className="text-sm font-semibold">
-              {post.user.name}
+              {`${post?.userId?.firstName} ${post?.userId?.lastName}`}
             </ThemedText>
             <ThemedText className="!text-muted text-sm">
-              {post.user.handle}
+              @{post?.userId?.username}
             </ThemedText>
             <ThemedText className="!text-muted text-sm">·</ThemedText>
             <ThemedText className="!text-muted text-sm">
@@ -64,20 +96,23 @@ export default function PostCard({
             </ThemedText>
           </View>
           <ThemedText className="mt-1.5 text-[15px] leading-[22px]">
-            {post.text}
+            {post.content}
           </ThemedText>
           <PostActions
-            likeCount={post.likeCount}
-            commentCount={post.commentCount}
+            likeCount={likeCount}
+            commentCount={post.commentsCount ?? 0}
+            isLiked={isLiked}
+            isLiking={isLiking}
+            onLikePress={() => mutateLike()}
             onCommentPress={() => setShowComments((prev) => !prev)}
           />
         </View>
       </View>
-      {showComments && onAddComment && (
+      {showComments && (
         <CommentSection
-          postId={post.id}
-          comments={comments}
-          onAddComment={onAddComment}
+          postId={post._id}
+          comments={post?.comments || []}
+          onCommentSuccess={refreshPost}
         />
       )}
     </Animated.View>

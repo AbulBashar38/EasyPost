@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { getToken, removeToken } from "./tokenStorage";
+
 const BASE_URL = "http://localhost:5050/api";
 
 export const apiClient = axios.create({
@@ -10,12 +12,23 @@ export const apiClient = axios.create({
   },
 });
 
+apiClient.interceptors.request.use(
+  async (config) => {
+    const token = await getToken();
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
 apiClient.interceptors.response.use(
   (response) => response,
-  (error) => {
-    console.log(error);
-
-    // TODO: Add global error handling (e.g. token refresh, logout on 401)
+  async (error) => {
+    if (error.response?.status === 401) {
+      await removeToken();
+    }
     return Promise.reject(error);
   },
 );

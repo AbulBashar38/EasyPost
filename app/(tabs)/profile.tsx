@@ -1,70 +1,53 @@
-import { useCallback, useMemo, useState } from "react";
-import { FlatList, View } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import PostCard from "@/components/feed/PostCard";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { ThemedText } from "@/components/themed-text";
-import { MOCK_COMMENTS, MOCK_POSTS } from "@/constants/mockData";
-import type { Comment, Post } from "@/constants/types";
-
-// TODO: Replace with actual logged-in user
-const CURRENT_USER = {
-  id: "u1",
-  name: "Sarah Chen",
-  handle: "@sarahchen",
-  bio: "Software engineer building things for the web. Open source enthusiast. Always learning, always shipping.",
-};
+import { useAuth } from "@/contexts/AuthContext";
+import { getMyPosts } from "@/services/postService";
+import { IPost } from "@/types/PostType";
 
 export default function ProfileScreen() {
-  const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS);
+  const { user } = useAuth();
 
-  const userPosts = useMemo(
-    () => MOCK_POSTS.filter((p) => p.user.id === CURRENT_USER.id),
-    [],
-  );
+  const { data, isLoading } = useQuery({
+    queryKey: ["myPosts"],
+    queryFn: () => getMyPosts(1, 20),
+    enabled: !!user,
+  });
+
+  const myPosts = useMemo(() => data?.posts ?? [], [data]);
 
   const totalLikes = useMemo(
-    () => userPosts.reduce((sum, p) => sum + p.likeCount, 0),
-    [userPosts],
+    () => myPosts.reduce((sum, p) => sum + (p.likesCount ?? 0), 0),
+    [myPosts],
   );
 
-  const handleAddComment = useCallback(
-    (postId: string, text: string, parentId?: string) => {
-      const newComment: Comment = {
-        id: `c${Date.now()}`,
-        postId,
-        user: { id: CURRENT_USER.id, name: CURRENT_USER.name, handle: CURRENT_USER.handle },
-        text,
-        createdAt: new Date().toISOString(),
-        parentId: parentId ?? null,
-      };
-      setComments((prev) => [...prev, newComment]);
-    },
-    [],
-  );
+  if (!user) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-surface">
+        <ThemedText className="!text-muted">Loading profile...</ThemedText>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
-      <FlatList<Post>
-        data={userPosts}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <PostCard
-            post={item}
-            index={index}
-            comments={comments.filter((c) => c.postId === item.id)}
-            onAddComment={handleAddComment}
-          />
-        )}
+      <FlatList<IPost>
+        data={myPosts}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item, index }) => <PostCard post={item} index={index} />}
         ListHeaderComponent={
           <>
             <ProfileHeader
-              name={CURRENT_USER.name}
-              handle={CURRENT_USER.handle}
-              userId={CURRENT_USER.id}
-              bio={CURRENT_USER.bio}
-              postCount={userPosts.length}
+              name={`${user.firstName} ${user.lastName}`}
+              handle={`@${user.username}`}
+              userId={user._id}
+              bio="Software engineer building things for the web. Open source enthusiast. Always learning, always shipping."
+              postCount={data?.total ?? myPosts.length}
               totalLikes={totalLikes}
             />
             <View className="border-b border-divider px-4 py-2.5">
@@ -73,11 +56,17 @@ export default function ProfileScreen() {
           </>
         }
         ListEmptyComponent={
-          <View className="items-center px-6 py-12">
-            <ThemedText className="!text-muted text-base">
-              No posts yet.
-            </ThemedText>
-          </View>
+          isLoading ? (
+            <View className="items-center py-12">
+              <ActivityIndicator size="large" />
+            </View>
+          ) : (
+            <View className="items-center px-6 py-12">
+              <ThemedText className="!text-muted text-base">
+                No posts yet.
+              </ThemedText>
+            </View>
+          )
         }
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}

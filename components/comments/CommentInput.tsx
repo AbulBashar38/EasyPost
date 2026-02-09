@@ -8,12 +8,14 @@ interface CommentInputProps {
   onSubmit: (text: string) => void;
   replyingTo: string | null;
   onCancelReply: () => void;
+  isSubmitting?: boolean;
 }
 
 export default function CommentInput({
   onSubmit,
   replyingTo,
   onCancelReply,
+  isSubmitting = false,
 }: CommentInputProps) {
   const [text, setText] = useState("");
   const inputRef = useRef<TextInput>(null);
@@ -26,7 +28,7 @@ export default function CommentInput({
 
   const handleSubmit = () => {
     const trimmed = text.trim();
-    if (!trimmed) return;
+    if (!trimmed || isSubmitting) return;
     onSubmit(trimmed);
     setText("");
   };
@@ -56,12 +58,13 @@ export default function CommentInput({
           className="flex-1 text-[14px] text-foreground"
           multiline
           maxLength={500}
+          editable={!isSubmitting}
         />
         <Pressable
           onPress={handleSubmit}
-          disabled={!text.trim()}
+          disabled={!text.trim() || isSubmitting}
           hitSlop={8}
-          style={{ opacity: text.trim() ? 1 : 0.4 }}
+          style={{ opacity: text.trim() && !isSubmitting ? 1 : 0.4 }}
         >
           <Ionicons name="send" size={18} className="text-primary" />
         </Pressable>

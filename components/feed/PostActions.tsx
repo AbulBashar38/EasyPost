@@ -16,22 +16,37 @@ function formatCount(count: number): string {
 interface PostActionsProps {
   likeCount: number;
   commentCount: number;
+  isLiked?: boolean;
+  isLiking?: boolean;
+  onLikePress?: () => void;
   onCommentPress?: () => void;
 }
 
 export default function PostActions({
   likeCount,
   commentCount,
+  isLiked = false,
+  isLiking = false,
+  onLikePress,
   onCommentPress,
 }: PostActionsProps) {
   return (
     <View className="mt-3 flex-row items-center gap-5">
-      <View className="flex-row items-center gap-1.5">
-        <Ionicons name="heart-outline" size={18} className="text-placeholder" />
-        <ThemedText className="!text-muted text-sm">
+      <Pressable
+        onPress={onLikePress}
+        disabled={isLiking}
+        className="flex-row items-center gap-1.5"
+        hitSlop={8}
+      >
+        <Ionicons
+          name={isLiked ? "heart" : "heart-outline"}
+          size={18}
+          className={isLiked ? "text-error" : "text-placeholder"}
+        />
+        <ThemedText className={`!text-muted text-sm ${isLiked ? "!text-error font-semibold" : ""}`}>
           {formatCount(likeCount)}
         </ThemedText>
-      </View>
+      </Pressable>
       <Pressable
         onPress={onCommentPress}
         className="flex-row items-center gap-1.5"

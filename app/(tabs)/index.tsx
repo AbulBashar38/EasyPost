@@ -1,50 +1,51 @@
-import { useCallback, useState } from "react";
-import { FlatList } from "react-native";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { ActivityIndicator, FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import FeedHeader from "@/components/feed/FeedHeader";
 import PostCard from "@/components/feed/PostCard";
-import { MOCK_COMMENTS, MOCK_POSTS } from "@/constants/mockData";
-import type { Comment, Post } from "@/constants/types";
-
-const CURRENT_USER = {
-  id: "u1",
-  name: "Sarah Chen",
-  handle: "@sarahchen",
-};
+import { ThemedText } from "@/components/themed-text";
+import { getPosts } from "@/services/postService";
+import { IPost } from "@/types/PostType";
 
 export default function FeedScreen() {
-  const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS);
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["posts"],
+    queryFn: () => getPosts(1, 10),
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const handleAddComment = useCallback(
-    (postId: string, text: string, parentId?: string) => {
-      const newComment: Comment = {
-        id: `c${Date.now()}`,
-        postId,
-        user: CURRENT_USER,
-        text,
-        createdAt: new Date().toISOString(),
-        parentId: parentId ?? null,
-      };
-      setComments((prev) => [...prev, newComment]);
-    },
-    [],
-  );
+  const posts = useMemo(() => data?.posts ?? [], [data]);
+
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-surface">
+        <ActivityIndicator size="large" />
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center bg-surface">
+        <ThemedText className="!text-error">Failed to load posts</ThemedText>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       <FeedHeader />
-      <FlatList<Post>
-        data={MOCK_POSTS}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item, index }) => (
-          <PostCard
-            post={item}
-            index={index}
-            comments={comments.filter((c) => c.postId === item.id)}
-            onAddComment={handleAddComment}
-          />
-        )}
+      <FlatList<IPost>
+        data={posts}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item, index }) => <PostCard post={item} index={index} />}
+        ListEmptyComponent={
+          <View className="items-center px-6 py-12">
+            <ThemedText className="!text-muted">No posts available</ThemedText>
+          </View>
+        }
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{ paddingBottom: 20 }}
       />

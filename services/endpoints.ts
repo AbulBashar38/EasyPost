@@ -5,13 +5,15 @@ export const ENDPOINTS = {
   },
   POSTS: {
     LIST: "/posts",
+    MINE: "/posts/mine",
     CREATE: "/posts",
     DETAIL: (id: string) => `/posts/${id}`,
     LIKE: (id: string) => `/posts/${id}/like`,
   },
   COMMENTS: {
-    LIST: (postId: string) => `/posts/${postId}/comments`,
-    CREATE: (postId: string) => `/posts/${postId}/comments`,
+    LIST: "/comments",
+    CREATE: "/comments",
+    DELETE: "/comments",
   },
   USERS: {
     PROFILE: (id: string) => `/users/${id}`,

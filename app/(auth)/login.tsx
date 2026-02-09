@@ -1,19 +1,19 @@
 import { useMutation } from "@tanstack/react-query";
 import { AxiosError } from "axios";
-import { useRouter } from "expo-router";
 
 import LoginForm from "@/components/login/LoginForm";
 import type { LoginFormData } from "@/components/login/loginSchema";
+import { useAuth } from "@/contexts/AuthContext";
 import { login } from "@/services/authService";
 
 export default function LoginScreen() {
-  const router = useRouter();
+  const { signIn } = useAuth();
 
   const { mutate, isPending, error } = useMutation({
     mutationFn: (data: LoginFormData) =>
       login({ email: data.email, password: data.password }),
-    onSuccess: () => {
-      router.replace("/(tabs)");
+    onSuccess: async (data) => {
+      await signIn(data.token, data.user);
     },
     onError: (err) => {
       if (err instanceof AxiosError) {

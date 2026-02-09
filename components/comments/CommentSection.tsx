@@ -1,50 +1,58 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { View } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 
-import type { Comment } from "@/constants/types";
+import { ThemedText } from "@/components/themed-text";
+import { createComment, getComments } from "@/services/commentService";
+import type { IComment } from "@/types/CommentType";
 
 import CommentInput from "./CommentInput";
 import CommentThread from "./CommentThread";
 
 interface CommentSectionProps {
   postId: string;
-  comments: Comment[];
-  onAddComment: (postId: string, text: string, parentId?: string) => void;
+  comments?: IComment[];
+  onCommentSuccess?: () => void;
 }
 
 export default function CommentSection({
   postId,
-  comments,
-  onAddComment,
+  onCommentSuccess,
 }: CommentSectionProps) {
+  const queryClient = useQueryClient();
   const [replyingTo, setReplyingTo] = useState<{
     commentId: string;
     userName: string;
   } | null>(null);
 
-  const threads = useMemo(() => {
-    const topLevel = comments.filter((c) => c.parentId === null);
-    const repliesByParent = new Map<string, Comment[]>();
-    for (const c of comments) {
-      if (c.parentId) {
-        const existing = repliesByParent.get(c.parentId) ?? [];
-        existing.push(c);
-        repliesByParent.set(c.parentId, existing);
-      }
-    }
-    return topLevel.map((comment) => ({
-      comment,
-      replies: repliesByParent.get(comment.id) ?? [],
-    }));
-  }, [comments]);
+  // Fetch comments from API
+  const { data: apiComments, isLoading: isLoadingComments } = useQuery({
+    queryKey: ["comments", postId],
+    queryFn: () => getComments(postId),
+  });
+
+  // Create comment mutation
+  const { mutate: mutateCreateComment, isPending: isCreatingComment } =
+    useMutation({
+      mutationFn: (content: string) => createComment(postId, { content }),
+      onSuccess: () => {
+        setReplyingTo(null);
+        queryClient.invalidateQueries({ queryKey: ["comments", postId] });
+        onCommentSuccess?.();
+      },
+    });
+
+  const comments: IComment[] = useMemo(() => {
+    return apiComments?.comments ?? [];
+  }, [apiComments?.comments]);
 
   const handleReply = (commentId: string, userName: string) => {
     setReplyingTo({ commentId, userName });
   };
 
   const handleSubmit = (text: string) => {
-    onAddComment(postId, text, replyingTo?.commentId);
-    setReplyingTo(null);
+    if (!text.trim()) return;
+    mutateCreateComment(text);
   };
 
   const handleCancelReply = () => {
@@ -53,18 +61,30 @@ export default function CommentSection({
 
   return (
     <View className="mt-2 border-t border-divider pt-2">
-      {threads.map(({ comment, replies }) => (
-        <CommentThread
-          key={comment.id}
-          comment={comment}
-          replies={replies}
-          onReply={handleReply}
-        />
-      ))}
+      {isLoadingComments ? (
+        <View className="items-center py-4">
+          <ActivityIndicator size="small" />
+        </View>
+      ) : comments.length === 0 ? (
+        <View className="items-center py-4">
+          <ThemedText className="!text-muted text-sm">
+            No comments yet
+          </ThemedText>
+        </View>
+      ) : (
+        comments.map((comment) => (
+          <CommentThread
+            key={comment._id}
+            comment={comment}
+            onReply={handleReply}
+          />
+        ))
+      )}
       <CommentInput
         onSubmit={handleSubmit}
         replyingTo={replyingTo?.userName ?? null}
         onCancelReply={handleCancelReply}
+        isSubmitting={isCreatingComment}
       />
     </View>
   );
