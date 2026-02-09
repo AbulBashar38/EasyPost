@@ -1,25 +1,22 @@
-# Mini Social Feed App
+# EasyPost - Mini Social Feed App
 
-A lightweight social media application built with React Native and Expo, allowing users to post updates, view a shared feed, interact with posts through likes and comments, and receive real-time notifications.
+EasyPost is a lightweight social media application built with React Native and Expo. It allows users to post updates, view a shared feed, interact with posts through likes and comments, and receive real-time notifications.
 
-## 🎯 Features
+## Screenshots
 
-- **User Authentication**: Login and signup screens
-- **Social Feed**: Scrollable list of posts with like and comment functionality
-- **Post Creation**: Text-only form to publish new posts
-- **Interactions**: Like and comment on posts
-- **Filtering**: Filter newsfeed by username
-- **Real-time Notifications**: Push notifications via Firebase for new likes and comments
+### Main Screens
 
-## 🛠 Tech Stack
+| Home Feed                                 | Home Feed with Comments                                    | Create Post                                 | Profile                                    |
+| ----------------------------------------- | ---------------------------------------------------------- | ------------------------------------------- | ------------------------------------------ |
+| ![Home Feed](assets/app-images/home.jpeg) | ![Home Feed Comments](assets/app-images/home-coments.jpeg) | ![Create Post](assets/app-images/post.jpeg) | ![Profile](assets/app-images/profile.jpeg) |
 
-- **Frontend**: React Native with Expo
-- **Navigation**: Expo Router
-- **Styling**: NativeWind (Tailwind CSS for React Native)
-- **Backend**: Firebase (for authentication, database, and notifications)
-- **Language**: TypeScript
+### Notifications
 
-## 🚀 Getting Started
+| Notifications                                               |
+| ----------------------------------------------------------- |
+| <img src="assets/app-images/notification.jpeg" width="200"> |
+
+## Installation
 
 ### Prerequisites
 
@@ -28,7 +25,7 @@ A lightweight social media application built with React Native and Expo, allowin
 - Expo CLI
 - iOS Simulator (for iOS development) or Android Studio (for Android development)
 
-### Installation
+### Steps
 
 1. Clone the repository:
 
@@ -59,14 +56,31 @@ A lightweight social media application built with React Native and Expo, allowin
    - For Android: `npm run android`
    - For Web: `npm run web`
 
-## 📱 Usage
+## Features
+
+- User Authentication: Login and signup screens
+- Social Feed: Scrollable list of posts with like and comment functionality
+- Post Creation: Text-only form to publish new posts
+- Interactions: Like and comment on posts
+- Filtering: Filter newsfeed by username
+- Real-time Notifications: Push notifications via Firebase for new likes and comments
+
+## Tech Stack
+
+- Frontend: React Native with Expo
+- Navigation: Expo Router
+- Styling: NativeWind (Tailwind CSS for React Native)
+- Backend: Firebase (for authentication, database, and notifications)
+- Language: TypeScript
+
+## Usage
 
 ### Screens
 
-- **Login/Signup**: Authenticate users
-- **Feed**: View all posts, like, comment, and filter by username
-- **Create Post**: Compose and publish new text posts
-- **Notifications**: View push notifications for interactions
+- Login/Signup: Authenticate users
+- Feed: View all posts, like, comment, and filter by username
+- Create Post: Compose and publish new text posts
+- Notifications: View push notifications for interactions
 
 ### Key Interactions
 
@@ -75,7 +89,7 @@ A lightweight social media application built with React Native and Expo, allowin
 - Use the filter to view posts from specific users
 - Receive real-time notifications for new likes and comments
 
-## 🏗 Project Structure
+## Project Structure
 
 ```
 easypost/
@@ -93,13 +107,13 @@ easypost/
 └── scripts/               # Utility scripts
 ```
 
-## 🔧 Development
+## Development
 
 - `npm start`: Start the Expo development server
 - `npm run reset-project`: Reset the project to its initial state
 - `npm run lint`: Run ESLint for code quality checks
 
-## 📝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -107,10 +121,6 @@ easypost/
 4. Run tests and linting
 5. Submit a pull request
 
-## 📄 License
-
-This project is licensed under the MIT License.
-
-## 📄 License
+## License
 
 This project is licensed under the MIT License.
