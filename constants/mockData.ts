@@ -1,0 +1,68 @@
+import type { Post } from "./types";
+
+export const MOCK_POSTS: Post[] = [
+  {
+    id: "1",
+    user: { id: "u1", name: "Sarah Chen", handle: "@sarahchen" },
+    text: "Just shipped a new feature at work and the team loved it. Sometimes the best solutions are the simplest ones.",
+    createdAt: "2026-02-09T10:30:00Z",
+    likeCount: 42,
+    commentCount: 7,
+  },
+  {
+    id: "2",
+    user: { id: "u2", name: "Marcus Johnson", handle: "@marcusj" },
+    text: "Hot take: tabs are better than spaces. I will not be taking questions at this time.",
+    createdAt: "2026-02-09T09:15:00Z",
+    likeCount: 128,
+    commentCount: 34,
+  },
+  {
+    id: "3",
+    user: { id: "u3", name: "Priya Patel", handle: "@priyabuilds" },
+    text: "Started learning Rust this week. The borrow checker is humbling but the compiler error messages are genuinely helpful. Day 3 progress update coming soon.",
+    createdAt: "2026-02-09T08:00:00Z",
+    likeCount: 89,
+    commentCount: 12,
+  },
+  {
+    id: "4",
+    user: { id: "u4", name: "Alex Rivera", handle: "@alexr" },
+    text: "Friendly reminder to take breaks during long coding sessions. Your future self will thank you.",
+    createdAt: "2026-02-08T22:45:00Z",
+    likeCount: 256,
+    commentCount: 18,
+  },
+  {
+    id: "5",
+    user: { id: "u5", name: "Jordan Lee", handle: "@jordanlee" },
+    text: "Finally fixed that bug that has been haunting me for three days. It was a missing await. Always a missing await.",
+    createdAt: "2026-02-08T18:30:00Z",
+    likeCount: 312,
+    commentCount: 45,
+  },
+  {
+    id: "6",
+    user: { id: "u1", name: "Sarah Chen", handle: "@sarahchen" },
+    text: "Reading through the React Native new architecture docs. Fabric and TurboModules are impressive improvements under the hood.",
+    createdAt: "2026-02-08T14:20:00Z",
+    likeCount: 67,
+    commentCount: 9,
+  },
+  {
+    id: "7",
+    user: { id: "u6", name: "Emma Wilson", handle: "@emmaw" },
+    text: "Pair programming tip: the navigator should resist the urge to grab the keyboard. Trust the driver, ask questions instead.",
+    createdAt: "2026-02-08T11:00:00Z",
+    likeCount: 184,
+    commentCount: 21,
+  },
+  {
+    id: "8",
+    user: { id: "u3", name: "Priya Patel", handle: "@priyabuilds" },
+    text: "Our open source project just hit 1,000 stars on GitHub! Huge thanks to everyone who contributed. Community-driven development at its best.",
+    createdAt: "2026-02-07T16:45:00Z",
+    likeCount: 523,
+    commentCount: 67,
+  },
+];

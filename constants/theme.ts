@@ -28,6 +28,7 @@ export const Colors = {
     errorLight: "#FEF2F2",
     surface: "#FFFFFF",
     iconBg: "#EEEDF8",
+    divider: "#F0EFF5",
   },
   dark: {
     text: "#ECEDEE",
@@ -48,6 +49,7 @@ export const Colors = {
     errorLight: "#3B1A1A",
     surface: "#13111C",
     iconBg: "#252238",
+    divider: "#232034",
   },
 };
 

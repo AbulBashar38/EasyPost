@@ -19,6 +19,8 @@ module.exports = {
         "icon-bg": "rgb(var(--color-icon-bg) / <alpha-value>)",
         // Text colors
         foreground: "rgb(var(--color-text) / <alpha-value>)",
+        // Layout colors
+        divider: "rgb(var(--color-divider) / <alpha-value>)",
       },
     },
   },
