@@ -2,7 +2,7 @@ import axios from "axios";
 
 import { getToken, removeToken } from "./tokenStorage";
 
-const BASE_URL = "http://localhost:5050/api";
+const BASE_URL = "https://easy-post-backend.vercel.app/api";
 
 export const apiClient = axios.create({
   baseURL: BASE_URL,
