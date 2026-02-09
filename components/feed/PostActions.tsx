@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 import { ThemedText } from "@/components/themed-text";
 
@@ -16,11 +16,13 @@ function formatCount(count: number): string {
 interface PostActionsProps {
   likeCount: number;
   commentCount: number;
+  onCommentPress?: () => void;
 }
 
 export default function PostActions({
   likeCount,
   commentCount,
+  onCommentPress,
 }: PostActionsProps) {
   return (
     <View className="mt-3 flex-row items-center gap-5">
@@ -30,7 +32,11 @@ export default function PostActions({
           {formatCount(likeCount)}
         </ThemedText>
       </View>
-      <View className="flex-row items-center gap-1.5">
+      <Pressable
+        onPress={onCommentPress}
+        className="flex-row items-center gap-1.5"
+        hitSlop={8}
+      >
         <Ionicons
           name="chatbubble-outline"
           size={17}
@@ -39,7 +45,7 @@ export default function PostActions({
         <ThemedText className="!text-muted text-sm">
           {formatCount(commentCount)}
         </ThemedText>
-      </View>
+      </Pressable>
     </View>
   );
 }

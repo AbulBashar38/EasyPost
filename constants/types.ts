@@ -12,3 +12,12 @@ export interface Post {
   likeCount: number;
   commentCount: number;
 }
+
+export interface Comment {
+  id: string;
+  postId: string;
+  user: User;
+  text: string;
+  createdAt: string;
+  parentId: string | null;
+}

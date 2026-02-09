@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { View } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 
+import CommentSection from "@/components/comments/CommentSection";
 import { ThemedText } from "@/components/themed-text";
-import type { Post } from "@/constants/types";
+import type { Comment, Post } from "@/constants/types";
 
 import PostActions from "./PostActions";
 import UserAvatar from "./UserAvatar";
@@ -29,9 +31,18 @@ function getRelativeTime(isoString: string): string {
 interface PostCardProps {
   post: Post;
   index: number;
+  comments?: Comment[];
+  onAddComment?: (postId: string, text: string, parentId?: string) => void;
 }
 
-export default function PostCard({ post, index }: PostCardProps) {
+export default function PostCard({
+  post,
+  index,
+  comments = [],
+  onAddComment,
+}: PostCardProps) {
+  const [showComments, setShowComments] = useState(false);
+
   return (
     <Animated.View
       entering={FadeInDown.duration(400).delay(Math.min(index, 5) * 80)}
@@ -58,9 +69,17 @@ export default function PostCard({ post, index }: PostCardProps) {
           <PostActions
             likeCount={post.likeCount}
             commentCount={post.commentCount}
+            onCommentPress={() => setShowComments((prev) => !prev)}
           />
         </View>
       </View>
+      {showComments && onAddComment && (
+        <CommentSection
+          postId={post.id}
+          comments={comments}
+          onAddComment={onAddComment}
+        />
+      )}
     </Animated.View>
   );
 }

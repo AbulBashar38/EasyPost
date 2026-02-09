@@ -1,4 +1,4 @@
-import type { Post } from "./types";
+import type { Comment, Post } from "./types";
 
 export const MOCK_POSTS: Post[] = [
   {
@@ -64,5 +64,72 @@ export const MOCK_POSTS: Post[] = [
     createdAt: "2026-02-07T16:45:00Z",
     likeCount: 523,
     commentCount: 67,
+  },
+];
+
+export const MOCK_COMMENTS: Comment[] = [
+  {
+    id: "c1",
+    postId: "1",
+    user: { id: "u2", name: "Marcus Johnson", handle: "@marcusj" },
+    text: "Congrats on the launch! Simple solutions are always the hardest to find.",
+    createdAt: "2026-02-09T11:00:00Z",
+    parentId: null,
+  },
+  {
+    id: "c2",
+    postId: "1",
+    user: { id: "u3", name: "Priya Patel", handle: "@priyabuilds" },
+    text: "Love this mindset. What stack are you using?",
+    createdAt: "2026-02-09T11:30:00Z",
+    parentId: null,
+  },
+  {
+    id: "c3",
+    postId: "1",
+    user: { id: "u1", name: "Sarah Chen", handle: "@sarahchen" },
+    text: "Thanks! React Native with Expo on this one.",
+    createdAt: "2026-02-09T11:45:00Z",
+    parentId: "c2",
+  },
+  {
+    id: "c4",
+    postId: "2",
+    user: { id: "u5", name: "Jordan Lee", handle: "@jordanlee" },
+    text: "Spaces gang forever. This is war.",
+    createdAt: "2026-02-09T09:30:00Z",
+    parentId: null,
+  },
+  {
+    id: "c5",
+    postId: "2",
+    user: { id: "u4", name: "Alex Rivera", handle: "@alexr" },
+    text: "Use whatever your team agreed on and move on 😄",
+    createdAt: "2026-02-09T09:45:00Z",
+    parentId: null,
+  },
+  {
+    id: "c6",
+    postId: "2",
+    user: { id: "u2", name: "Marcus Johnson", handle: "@marcusj" },
+    text: "Exactly my point. Tabs save bytes too!",
+    createdAt: "2026-02-09T10:00:00Z",
+    parentId: "c4",
+  },
+  {
+    id: "c7",
+    postId: "5",
+    user: { id: "u1", name: "Sarah Chen", handle: "@sarahchen" },
+    text: "The missing await... a classic. Been there too many times.",
+    createdAt: "2026-02-08T19:00:00Z",
+    parentId: null,
+  },
+  {
+    id: "c8",
+    postId: "5",
+    user: { id: "u3", name: "Priya Patel", handle: "@priyabuilds" },
+    text: "ESLint has a rule for that! no-floating-promises is a lifesaver.",
+    createdAt: "2026-02-08T19:15:00Z",
+    parentId: "c7",
   },
 ];

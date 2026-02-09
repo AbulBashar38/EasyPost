@@ -1,12 +1,12 @@
-import { useMemo } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { FlatList, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import PostCard from "@/components/feed/PostCard";
 import ProfileHeader from "@/components/profile/ProfileHeader";
 import { ThemedText } from "@/components/themed-text";
-import { MOCK_POSTS } from "@/constants/mockData";
-import type { Post } from "@/constants/types";
+import { MOCK_COMMENTS, MOCK_POSTS } from "@/constants/mockData";
+import type { Comment, Post } from "@/constants/types";
 
 // TODO: Replace with actual logged-in user
 const CURRENT_USER = {
@@ -17,6 +17,8 @@ const CURRENT_USER = {
 };
 
 export default function ProfileScreen() {
+  const [comments, setComments] = useState<Comment[]>(MOCK_COMMENTS);
+
   const userPosts = useMemo(
     () => MOCK_POSTS.filter((p) => p.user.id === CURRENT_USER.id),
     [],
@@ -27,13 +29,33 @@ export default function ProfileScreen() {
     [userPosts],
   );
 
+  const handleAddComment = useCallback(
+    (postId: string, text: string, parentId?: string) => {
+      const newComment: Comment = {
+        id: `c${Date.now()}`,
+        postId,
+        user: { id: CURRENT_USER.id, name: CURRENT_USER.name, handle: CURRENT_USER.handle },
+        text,
+        createdAt: new Date().toISOString(),
+        parentId: parentId ?? null,
+      };
+      setComments((prev) => [...prev, newComment]);
+    },
+    [],
+  );
+
   return (
     <SafeAreaView className="flex-1 bg-surface" edges={["top"]}>
       <FlatList<Post>
         data={userPosts}
         keyExtractor={(item) => item.id}
         renderItem={({ item, index }) => (
-          <PostCard post={item} index={index} />
+          <PostCard
+            post={item}
+            index={index}
+            comments={comments.filter((c) => c.postId === item.id)}
+            onAddComment={handleAddComment}
+          />
         )}
         ListHeaderComponent={
           <>

@@ -28,9 +28,7 @@ export default function ProfileHeader({
       className="items-center px-6 pb-6 pt-8"
     >
       {/* Avatar */}
-      <View
-        className="mb-4 rounded-full border-[3px] border-primary/20 p-1"
-      >
+      <View className="mb-4 rounded-full border-[3px] border-primary/20 p-1">
         <UserAvatar name={name} userId={userId} size={72} />
       </View>
 
